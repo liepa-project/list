@@ -22,6 +22,8 @@ services:
     logging: *default-logging  
     labels:
      - "traefik.enable=true"
+     #./traefik/traefik.toml - check for more details about container filtering(providers.docker->constraints)
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.traefik.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
      - "traefik.http.routers.traefik.entrypoints=web,websecure"
      - "traefik.http.routers.traefik.service=api@internal"
@@ -36,6 +38,7 @@ services:
     logging: *default-logging  
     labels:
      - "traefik.enable=true"
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.web.rule=PathPrefix(`/${URL}/`)"
      - "traefik.http.routers.web.middlewares=web"
      - "traefik.http.routers.web.entrypoints=web,websecure"
@@ -48,6 +51,7 @@ services:
     logging: *default-logging  
     labels:
      - "traefik.enable=true" 
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.editor2.rule=PathPrefix(`/${URL}/editor/`)"
      - "traefik.http.routers.editor2.middlewares=editor2"
      - "traefik.http.routers.editor2.entrypoints=web,websecure"
@@ -71,6 +75,7 @@ services:
       MONGO_URL: ${LIST_MONGO_URL}
     labels:
      - "traefik.enable=true"
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.upload.rule=PathPrefix(`/${URL}/transcriber/`)"
      - "traefik.http.routers.upload.middlewares=upload"
      - "traefik.http.routers.upload.entrypoints=web,websecure"
@@ -89,6 +94,7 @@ services:
       MONGO_URL: ${LIST_MONGO_URL}
     labels:
      - "traefik.enable=true"
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.result.rule=PathPrefix(`/${URL}/result.service/`)"
      - "traefik.http.routers.result.middlewares=result"
      - "traefik.http.routers.result.entrypoints=web,websecure"
@@ -109,6 +115,7 @@ services:
       MONGO_URL: ${LIST_MONGO_URL}    
     labels:
      - "traefik.enable=true"
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.status.rule=PathPrefix(`/${URL}/status.service/`)"
      - "traefik.http.routers.status.middlewares=status"
      - "traefik.http.routers.status.entrypoints=web,websecure"
@@ -326,6 +333,7 @@ services:
       MONGO_URL: ${LIST_MONGO_URL} 
     labels:
      - "traefik.enable=true"
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.clean.rule=PathPrefix(`/${URL}/clean.service/`)"
      - "traefik.http.routers.clean.middlewares=clean"
      - "traefik.http.routers.clean.entrypoints=web,websecure"
@@ -348,6 +356,7 @@ services:
     logging: *default-logging
     labels:  
      - "traefik.enable=true"
+     - "traefik.list.env=${URL}"
      - "traefik.http.routers.prometheus.rule=PathPrefix(`/prometheus/`)"
      - "traefik.http.routers.prometheus.middlewares=prometheus"
      - "traefik.http.routers.prometheus.entrypoints=web,websecure"
