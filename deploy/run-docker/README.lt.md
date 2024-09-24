@@ -47,7 +47,7 @@ Patikrinkite ar visi reikalingi komponentai veikia mašinoje:
 
 1. Parsisiųskite diegimo skriptus (ši git repositorija):
 
-    `git clone https://github.com/airenas/list.git`
+    `git clone https://github.com/liepa-project/list`
 
     `cd list/deploy/run-docker`
 
@@ -55,7 +55,7 @@ Patikrinkite ar visi reikalingi komponentai veikia mašinoje:
 
 1. Pasirinkite diegimo versiją:
 
-    `git checkout v1.2`
+    `git checkout origin/liepa3-stable`
 
 1. Paruoškite konfigūracinį diegimo failą *Makefile.options*:
 

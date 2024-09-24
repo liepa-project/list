@@ -56,6 +56,10 @@
 # Enable Docker configuration backend
 [providers.docker]
   exposedByDefault = false
+  # TODO: make this parametrized as it has to be same as $URL in .env file. this has to got to docker-compose file, but it was loading from toml as priority
+  # this is needed to support multiple deployments on same machine, that traefik would filter out containers for same env. based on https://community.traefik.io/t/how-do-i-setup-multiple-traefiks-with-one-domain-and-one-external-ip/20448/2
+  constraints="Label(`traefik.list.env`,`ausis`)"
+
 # dynamic files config
 [providers.file]
     directory = "/etc/traefik/rules"
