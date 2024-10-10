@@ -164,9 +164,16 @@ else
 	spkJoinParam='--join-spk'; if [ "$(SKIP_SPEAKER_JOIN)" == "true" ] || [ "$(SKIP_SPEAKER_JOIN)" == "1" ]; then spkJoinParam=''; fi
 	echo "SKIP_NUM_JOIN=$(SKIP_NUM_JOIN); numJoinParam=$${numJoinParam}"
 	echo "SKIP_SPEAKER_JOIN=$(SKIP_SPEAKER_JOIN); spkJoinParam=$${spkJoinParam}"
+
+	# Replace synonymes
+	cd restore; python replace_synonyms.py -d $(MODELS_ROOT)/synonyms.csv -i $(OUTPUT_ROOT)/trans/$*/restore/L1.lat > $(OUTPUT_ROOT)/trans/$*/restore/L1s.lat || exit 1
+	cd restore; python replace_synonyms.py -d $(MODELS_ROOT)/synonyms.csv -i $(OUTPUT_ROOT)/trans/$*/restore/L2.lat > $(OUTPUT_ROOT)/trans/$*/restore/L2s.lat || exit 1
+
+
+
 	# Perform processing 
-	cd restore && perl lat_restore.pl $(OUTPUT_ROOT)/trans/$*/restore/L1.lat \
-		$(OUTPUT_ROOT)/trans/$*/restore/L2.lat \
+	cd restore && perl lat_restore.pl $(OUTPUT_ROOT)/trans/$*/restore/L1s.lat \
+		$(OUTPUT_ROOT)/trans/$*/restore/L2s.lat \
 		$(OUTPUT_ROOT)/trans/$*/restore/L3.lat $(MODELS_ROOT)/words.txt \
 		$(MODELS_ROOT)/phones.txt $${spkJoinParam} $${numJoinParam} > $(OUTPUT_ROOT)/trans/$*/restore/lat.restored.txt || exit 1
 endif
