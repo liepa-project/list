@@ -2,7 +2,7 @@
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #X                                                                  X
-#X lat_restore.pl, Copyright(C) Gailius Raðkinis, 2020-2022         X
+#X lat_restore.pl, Copyright(C) Gailius Raï¿½kinis, 2020-2022         X
 #X                                                                  X
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -50,6 +50,7 @@ my $L2 = shift @ARGV; # single best path lattice with transition-ids
 my $L3 = shift @ARGV; # multiple-path lattice with phone-ids
 $main::symtab_w = shift @ARGV; # word symbol table
 $main::symtab_p = shift @ARGV; # phone symbol table
+$main::symtab_synonym = shift @ARGV; # phone symbol table
 
 # joins two adjacent segments if they belong to the same speaker and 
 # their summary length is inferior to $max_sum_duration sec (long text is bad for VVT)
@@ -61,8 +62,8 @@ our $join_num = 0;
 our $max_intra_sil = 0.03;
 # Semantikos-2 redaktorius rodo hipoteziu alternatyvas
 # Intelektikos-2 redaktorius alternatyviu hipoteziu nerodo
-# Taupant skaiciavimo laika (FST <unk> apdorojimas suletino ðá komponeta) ir
-# siekiant minimizuoti <unk> zodziu kieki, keiciama elgsena pagal nutylëjimà
+# Taupant skaiciavimo laika (FST <unk> apdorojimas suletino ï¿½ï¿½ komponeta) ir
+# siekiant minimizuoti <unk> zodziu kieki, keiciama elgsena pagal nutylï¿½jimï¿½
 # Nuo siol alternatyvios hipotazes eliminuojmos, nebent nurodoma '--keep-alt'
 our $keep_alt = 0;
 
@@ -176,6 +177,21 @@ sub read_lats {
 
 #   }
 
+sub replace_synonyms {
+   my ( $lats_ref ) = @_;
+
+   for (my $i=0; $i<scalar @$lats_ref; $i++) { 
+      next if (defined $deb_lat && $i != $deb_lat); # debug
+      for(my $j=0; $j<scalar @{$$lats_ref[$i]->{_e}}; $j++) {
+         my $word_id = $$lats_ref[$i]->{_e}->[$j]->{word_id};
+         my $synonym_id = main::int2synonym($word_id);
+         #print "$word_id -> $synonym_id\n";
+         $$lats_ref[$i]->{_e}->[$j]->{word_id} = $synonym_id;
+         }
+      }
+   }
+#-----------------------------
+
 sub label_best {
    my ( $lats_ref, $lats_best_ref ) = @_;
 
@@ -281,6 +297,8 @@ sub read_map {
 
 read_map($main::symtab_w, \%main::i2w);
 read_map($main::symtab_p, \%main::i2p);
+read_map($main::symtab_synonym, \%main::i2synonym);
+
 
 my @L1;
 my @L2;
@@ -317,12 +335,18 @@ for(my $i=0; $i<scalar @L1; $i++) {
       }
    }
 
+replace_synonyms(\@L1);
+replace_synonyms(\@L2);
+
+
 # mark best hypothesis in the first colection of lattices
 label_best(\@L1, \@L2);
 label_phones(\@L1, \@L3);
 my @s_L1 = sort { $a->{_startTime} <=> $b->{_startTime} } @L1;
 # Connect digits
 print_lats(\@s_L1, 'FSNTIWP') if ($debug == 1);
+
+print "join_num: $join_num\n" if ($join_num == 1);
 
 connect_nums(\@s_L1) if ($join_num == 1);
 # Print text hypotheses
