@@ -169,10 +169,10 @@ else
 
 
 	# Perform processing 
-	cd restore && perl lat_restore.pl $(OUTPUT_ROOT)/trans/$*/restore/L1s.lat \
-		$(OUTPUT_ROOT)/trans/$*/restore/L2s.lat \
+	cd restore && perl lat_restore.pl $(OUTPUT_ROOT)/trans/$*/restore/L1.lat \
+		$(OUTPUT_ROOT)/trans/$*/restore/L2.lat \
 		$(OUTPUT_ROOT)/trans/$*/restore/L3.lat $(MODELS_ROOT)/words.txt \
-		$(MODELS_ROOT)/phones.txt $(MODELS_ROOT)/synonyms.txt \
+		$(MODELS_ROOT)/phones.txt $(MODELS_ROOT)/synonyms.csv \
 		$${spkJoinParam} $${numJoinParam} > $(OUTPUT_ROOT)/trans/$*/restore/lat.restored.txt || exit 1
 endif
 	touch $@ 

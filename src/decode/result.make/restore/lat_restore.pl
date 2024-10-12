@@ -346,8 +346,6 @@ my @s_L1 = sort { $a->{_startTime} <=> $b->{_startTime} } @L1;
 # Connect digits
 print_lats(\@s_L1, 'FSNTIWP') if ($debug == 1);
 
-print "join_num: $join_num\n" if ($join_num == 1);
-
 connect_nums(\@s_L1) if ($join_num == 1);
 # Print text hypotheses
 reduce_out(\@s_L1); # cia spausdina rezultata
