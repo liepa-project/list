@@ -1,0 +1,6 @@
+OUTPUT_ROOT=/data/decoded
+INPUT_ROOT=/data/decoded/audio
+APP_DIR=/app
+APPS_ROOT?=/apps/whisper
+RESULTS_ROOT=/data/results
+#MODELS_ROOT=/models

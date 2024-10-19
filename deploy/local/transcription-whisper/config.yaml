@@ -1,0 +1,25 @@
+worker:
+    name: TranscriptionServiceWhisper
+    queue: TranscriptionWhisper
+    command: make /data/decoded/trans/{ID}/whisper/.done
+    logFile: /data/logs/{ID}.log
+    workingDir: /cmd/
+    preloadKeyPrefix: 
+
+recognizerConfig:
+    path: /models/config/
+
+#registry:
+#    queue: TranscriptionWorker_Registry
+#    heartbeat: 30s  
+
+# messageServer: 
+#     broker: amqp://list:list@rabbitmq:5672/
+
+# logger:
+#     level: info
+#     formatter:
+#         name: text
+#         options: 
+#             full_timestamp: true
+#             timestamp_format: "2006-01-02T15:04:05.000"

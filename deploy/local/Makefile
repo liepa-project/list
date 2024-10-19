@@ -1,7 +1,7 @@
 include Makefile.options.local
 
 SUBDIRS=audio.prepare clean diarization diarization-alt dispatcher inform kafka.int manager \
-	metrics punctuation rescore result result.make status transcription \
+	metrics punctuation rescore result result.make status transcription transcription-whisper \
 	upload volume web
 
 clean_targets=$(patsubst %, %-clean, $(SUBDIRS))

@@ -181,6 +181,23 @@ services:
       - modelsStorage:/models 
       - modelsStorage2:/models2
 
+
+  transcription-whisper-service:
+    build: transcription-whisper
+    restart: unless-stopped
+    depends_on: 
+      - rabbitmq
+    environment:
+      MESSAGESERVER_URL: ${LIST_RABBITMQ_URL}
+      MESSAGESERVER_USER: ${LIST_RABBITMQ_USER}
+      MESSAGESERVER_PASS: ${LIST_RABBITMQ_PASS}  
+      DISPATCHER_REGISTRATIONQUEUE: TranscriptionWorkerWhisper_Registry
+    volumes:
+      - fileStorage:/data    
+      - appsStorage:/apps
+      - modelsStorage:/models 
+      - modelsStorage2:/models2        
+
   transcription-service:
     build: transcription
     restart: unless-stopped
