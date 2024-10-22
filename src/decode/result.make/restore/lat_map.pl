@@ -11,10 +11,8 @@ use warnings;
 
 our $symtab_w; # word symbol table
 our $symtab_p; # phone symbol table
-our $symtab_synonym; # phone symbol table
 our %i2w;
 our %i2p;
-our %i2synonym;
 
 sub int2word {
    my $a = shift @_;
@@ -45,19 +43,4 @@ sub int2phone {
 }
 #-----------------------------
 
-
-sub int2synonym {
-   my $a = shift @_;
-   if($a !~  m:^\d+$:) { # not all digits..
-      die "$0: found noninteger token $a\n";
-      }
-   my $s = $i2synonym{$a};
-   if(!defined ($s)) {
-      #die "$0: integer $a not in symbol table $symtab_synonym.";
-      return $a;
-      }
-   return $s;
-}
-
-#-----------------------------
 1
