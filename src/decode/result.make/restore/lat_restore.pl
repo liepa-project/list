@@ -23,6 +23,7 @@ use File::Basename;
 use Digest::MD5  qw(md5_hex);
 use lib dirname (__FILE__); # kad rastu .pm
 use LatGraph;
+use Synonym;
 #use Data::Dumper qw(Dumper);
 
 my $dirname = dirname(__FILE__);
@@ -318,8 +319,10 @@ for(my $i=0; $i<scalar @L1; $i++) {
    }
 
 # mark best hypothesis in the first colection of lattices
-label_best(\@L1, \@L2);
 label_phones(\@L1, \@L3);
+Synonym::replace_synonyms(\@L1, \@L2);
+label_best(\@L1, \@L2);
+
 my @s_L1 = sort { $a->{_startTime} <=> $b->{_startTime} } @L1;
 # Connect digits
 print_lats(\@s_L1, 'FSNTIWP') if ($debug == 1);
