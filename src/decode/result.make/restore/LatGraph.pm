@@ -2,7 +2,7 @@
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #X                                                                  X
-#X LatGraph.pl, Copyright(C) Gailius Raðkinis, 2020                 X
+#X LatGraph.pl, Copyright(C) Gailius Raï¿½kinis, 2020                 X
 #X                                                                  X
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -13,13 +13,13 @@ use File::Basename;
 use List::Util qw[min max];
 #use Data::Dumper qw(Dumper);
 
-my $qou = decode("utf-8", qq/\xe2\x80\x9e/); # „
-my $qcu = decode("utf-8", qq/\xe2\x80\x9c/); # “
+my $qou = decode("utf-8", qq/\xe2\x80\x9e/); # ï¿½
+my $qcu = decode("utf-8", qq/\xe2\x80\x9c/); # ï¿½
 
 # 124 S150
-# BESI <keturioliktudeðimtu> ???
+# BESI <keturioliktudeï¿½imtu> ???
 # 155 S218
-# 90 tûkst. -> 90000
+# 90 tï¿½kst. -> 90000
 # 97 S150
 # 337 mln. -> 337000000
 
@@ -277,8 +277,8 @@ sub batch_merge {
       my $firstin = $to;
       for(my $j=$from; $j<$to; $j++) {
          my $n2 = $self->{_e}->[$edges[$j]]->{n2}; # $edges[$j] may be already deleted on another path
-         if ($self->multi_income($self->{_in}->{$n2}, $edges[$j]) == 1) { # reikia neskaiciuoti naujø ryðiø
-#         if ((scalar @{$self->{_in}->{$n2}}) > 1) { # reikia neskaiciuoti naujø ryðiø
+         if ($self->multi_income($self->{_in}->{$n2}, $edges[$j]) == 1) { # reikia neskaiciuoti naujï¿½ ryï¿½iï¿½
+#         if ((scalar @{$self->{_in}->{$n2}}) > 1) { # reikia neskaiciuoti naujï¿½ ryï¿½iï¿½
             $firstin = $j;
             last;
             }
@@ -334,7 +334,7 @@ sub extend_chain {
    #print "Edges top: [".join(' ', @$edges_ref)."] Text: ".join(' ', @$words_ref)."\n" if ($main::debug == 1);
    $self->show_search_state($edges_ref, $words_ref, 'T') if ($main::debug == 1);
    
-   #my $proc_done = 0; # becomes 1 to inhibit multiple recursion calls (2 tûkst. 2 m. + 2 tûkst. 2 metø)
+   #my $proc_done = 0; # becomes 1 to inhibit multiple recursion calls (2 tï¿½kst. 2 m. + 2 tï¿½kst. 2 metï¿½)
    my $rc;
    my $n_curr = $self->{_e}->[$$edges_ref[-1]]->{n2};            # $n_curr is second node of the last edge in the array
    my $may_teminate_here = 0;
@@ -372,7 +372,7 @@ sub extend_chain {
       # process chain
       # return array of triplets <from, to, number>
       # triplets may be overlapping 
-      #$proc_done = 1; # never get here again in the same $i loop with a different stop (-) word (e.g. m. or metø)
+      #$proc_done = 1; # never get here again in the same $i loop with a different stop (-) word (e.g. m. or metï¿½)
       $self->show_search_state($edges_ref, $words_ref, 'A') if ($main::debug == 1);
       my @result = ();
       # analyze_chunk may itself return a $multi_case condition
@@ -439,7 +439,7 @@ sub purge_del_edges {
    }
 #-----------------------------
 
-# procedûros tikslas atstatyti skaièius pagal skaitinius komponentus
+# procedï¿½ros tikslas atstatyti skaiï¿½ius pagal skaitinius komponentus
 sub connect_nums {
    my ( $self ) = @_;
 
@@ -484,18 +484,18 @@ sub connect_nums {
 }
 #-----------------------------
 
-# procedûros tikslas sumaþinti briaunø/þodþiø skaièiø redaktoriui
+# procedï¿½ros tikslas sumaï¿½inti briaunï¿½/ï¿½odï¿½iï¿½ skaiï¿½iï¿½ redaktoriui
 sub reduce_out {
    my ( $self ) = @_;
 
-   # surûðiuojame briaunas pagal laikà ir þodá 
+   # surï¿½ï¿½iuojame briaunas pagal laikï¿½ ir ï¿½odï¿½ 
    # sort edges numerically
 #  print join(' ', keys @{$self->{_e}} )."\n\n";
    my $key_ref = $self->sort_edges_by_time();   
    return $key_ref if ($main::debug == 1);
    my @keys = @{$self->purge_del_edges($key_ref)};
 
-   # naikiname identiðkas briaunas
+   # naikiname identiï¿½kas briaunas
    my $j = 0;
    for(my $i=1; $i<scalar @keys; $i++) {
       if (!(
@@ -512,7 +512,7 @@ sub reduce_out {
       }
    splice (@keys, $j+1);
 
-   # naikiname smarkiai persidengianèias briaunas
+   # naikiname smarkiai persidengianï¿½ias briaunas
    for(my $i=0; $i<scalar @keys; $i++) {
       next if ($self->{_e}->[$keys[$i]]->{stt} == -1); # skip deleted edge
       my $li = $self->{_n_tm}->{$self->{_e}->[$keys[$i]]->{n2}} - $self->{_n_tm}->{$self->{_e}->[$keys[$i]]->{n1}}; # length of i-th edge
@@ -781,7 +781,10 @@ sub print_sorted {
                   $line .= $word;
                   }
                elsif (!main::is_unk(main::int2word($edge->{word_id}))) {
-                  my $word = main::int2word($edge->{word_id});
+                  my $word_id = $edge->{word_id};
+                  $word_id = $edge->{synonym_id} if (defined $edge->{synonym_id});
+                  my $word = main::int2word($word_id);
+                  $word = $edge->{grapheme} if (defined $edge->{grapheme});
                   # jei pasaliname jungiamuosius bruksnius tarp zodziu - redaktoriuje jie sulimpa
                   # pasaliname priedus 1-as 2-u
                   $word = $main::rev_map_digits_N{$word} if (defined $main::rev_map_digits_N{$word});

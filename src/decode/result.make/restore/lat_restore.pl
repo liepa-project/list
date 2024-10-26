@@ -67,6 +67,8 @@ our $max_intra_sil = 0.03;
 # Nuo siol alternatyvios hipotazes eliminuojmos, nebent nurodoma '--keep-alt'
 our $keep_alt = 0;
 
+our $text_only = 0;
+
 while (scalar @ARGV > 0) {
    if ($ARGV[0] eq '--join-spk') {
       $join_spk = 1;
@@ -86,6 +88,10 @@ while (scalar @ARGV > 0) {
       }
    elsif ($ARGV[0] eq '--keep-alt') {
       $keep_alt = 1;
+      shift @ARGV;
+      }
+   elsif ($ARGV[0] eq '--text-only') {
+      $text_only = 1;
       shift @ARGV;
       }
    else { # not accepted
@@ -320,7 +326,7 @@ for(my $i=0; $i<scalar @L1; $i++) {
 
 # mark best hypothesis in the first colection of lattices
 label_phones(\@L1, \@L3);
-Synonym::replace_synonyms(\@L1, \@L2);
+Synonym::replace_synonyms(\@L1, \@L2) if ($text_only == 1);;
 label_best(\@L1, \@L2);
 
 my @s_L1 = sort { $a->{_startTime} <=> $b->{_startTime} } @L1;
