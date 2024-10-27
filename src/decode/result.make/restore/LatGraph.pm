@@ -784,7 +784,7 @@ sub print_sorted {
                   my $word_id = $edge->{word_id};
                   $word_id = $edge->{synonym_id} if (defined $edge->{synonym_id});
                   my $word = main::int2word($word_id);
-                  $word = $edge->{grapheme} if (defined $edge->{grapheme});
+                  $word = '<'.$edge->{grapheme}.'>' if (defined $edge->{grapheme});
                   # jei pasaliname jungiamuosius bruksnius tarp zodziu - redaktoriuje jie sulimpa
                   # pasaliname priedus 1-as 2-u
                   $word = $main::rev_map_digits_N{$word} if (defined $main::rev_map_digits_N{$word});
