@@ -3,6 +3,7 @@
 # see Licenses/LICENSE.alumae
 
 -include Makefile.options
+-include Mekfile_.options
 
 OUTPUT_ROOT?=/decoded
 RESULTS_ROOT?=/results
@@ -159,13 +160,41 @@ else
 	lattice-to-phone-lattice --replace-words=false $(MODELS_ROOT)/final.mdl \
 		ark,t:$(OUTPUT_ROOT)/trans/$*/restore/L1.lat \
 		ark,t:$(OUTPUT_ROOT)/trans/$*/restore/L3.lat  || exit 1
-
-	numJoinParam='--join-num 0.03'; if [ "$(SKIP_NUM_JOIN)" == "1" ]; then numJoinParam=''; fi
-	spkJoinParam='--join-spk'; if [ "$(SKIP_SPEAKER_JOIN)" == "true" ] || [ "$(SKIP_SPEAKER_JOIN)" == "1" ]; then spkJoinParam=''; fi
+	
+############### SKIP_NUM_JOIN ###############
+	# numJoinParam='--join-num 0.03'; if [ "$(SKIP_NUM_JOIN)" == "1" ]; then numJoinParam=''; fi
+ifeq ($(SKIP_NUM_JOIN), 1)
+	numJoinParam=''
+else
+	numJoinParam='--join-num 0.03'
+endif
 	echo "SKIP_NUM_JOIN=$(SKIP_NUM_JOIN); numJoinParam=$${numJoinParam}"
+############### /SKIP_NUM_JOIN ###############
+############### /SKIP_SPEAKER_JOIN ###############
+	# spkJoinParam='--join-spk'; if [ "$(SKIP_SPEAKER_JOIN)" == "true" ] || [ "$(SKIP_SPEAKER_JOIN)" == "1" ]; then spkJoinParam=''; fi
+ifeq ($(SKIP_SPEAKER_JOIN), 1)
+	spkJoinParam=''
+else
+	spkJoinParam=--join-spk
+endif
 	echo "SKIP_SPEAKER_JOIN=$(SKIP_SPEAKER_JOIN); spkJoinParam=$${spkJoinParam}"
-
-
+############### /SKIP_SPEAKER_JOIN ###############
+############### Keep Alternative ###############
+ifeq ($(KEEP_ALT), 1)
+	keepAltParam=--keep-alt
+else
+	keepAltParam=
+endif
+	@echo "echo KEEP_ALT=$(KEEP_ALT); keepAltParam=$${keepAltParam}"
+############### /Keep Alternative ###############
+############### Text Only ###############
+ifeq ($(TEXT_ONLY), 1)
+	textOnlyParam=--text-only
+else
+	textOnlyParam=
+endif
+	@echo "echo TEXT_ONLY=$(TEXT_ONLY); textOnlyParam=$${textOnlyParam}"
+############### /Text Only ###############
 
 
 	# Perform processing 
@@ -173,8 +202,7 @@ else
 		$(OUTPUT_ROOT)/trans/$*/restore/L2.lat \
 		$(OUTPUT_ROOT)/trans/$*/restore/L3.lat $(MODELS_ROOT)/words.txt \
 		$(MODELS_ROOT)/phones.txt \
-		--text-only \ 
-		$${spkJoinParam} $${numJoinParam} > $(OUTPUT_ROOT)/trans/$*/restore/lat.restored.txt || exit 1
+		$${textOnlyParam} $${keepAltParam} $${spkJoinParam} $${numJoinParam} > $(OUTPUT_ROOT)/trans/$*/restore/lat.restored.txt || exit 1
 endif
 	touch $@ 
 
