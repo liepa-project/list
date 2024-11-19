@@ -30,6 +30,28 @@ services:
     #  - "traefik.http.routers.traefik.middlewares=home-ipw"
     #  - "traefik.http.middlewares.home-ipw.ipwhitelist.sourcerange=${HOME_IP}/32"  
 
+  log-files:
+    image: caddy:2.9
+    container_name: log-files
+    volumes:
+     - fileStorage:/data
+    restart: unless-stopped
+    logging: *default-logging
+    command: caddy file-server -b --root /data --listen 0.0.0.0:8000
+    deploy:
+      resources:
+        limits:
+          memory: 200m
+    labels:
+     - "traefik.enable=true"
+     - "traefik.list.env=${URL}"
+     - "traefik.http.routers.logfiles.rule=PathPrefix(`/${URL}/log.files/`)"
+     - "traefik.http.routers.logfiles.middlewares=logfiles"
+     - "traefik.http.routers.logfiles.entrypoints=web,websecure"
+     - "traefik.http.middlewares.logfiles.stripprefix.prefixes=/${URL}/log.files/"
+     - "traefik.http.services.logfiles.loadbalancer.server.port=8000"
+
+       
   web:
     image: ${DOCKER_REPO}ear-app:${EAR_APP_VERSION}
     restart: unless-stopped
