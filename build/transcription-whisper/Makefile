@@ -1,10 +1,10 @@
 #####################################################################################
 dist_dir=$(CURDIR)/deploy
-service=result-make-service
-version=3.1-dev-liepa3
+service=transcription-whisper
+version=dev-liepa3
 #####################################################################################
 ########### DOCKER ##################################################################
-tag=airenas/list-$(service):$(version)
+tag=$(service):$(version)
 
 dbuild:
 	docker buildx build -t $(tag) --build-arg BUILD_VERSION=$(version) --build-arg TOOLS_VERSION=$(version) \

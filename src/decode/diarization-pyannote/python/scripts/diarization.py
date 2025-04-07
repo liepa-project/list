@@ -18,7 +18,7 @@ def main(argv):
     args = parser.parse_args(args=argv)
 
     logger.info("Init models")
-    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1", use_auth_token=os.getenv('HF_API_TOKEN'))
+    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-3.1", use_auth_token=os.getenv('HF_API_TOKEN'))
     cuda = os.getenv('CUDA')
     if cuda and cuda != "cpu":
         pipeline = pipeline.to(torch.device(cuda))

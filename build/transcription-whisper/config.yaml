@@ -1,0 +1,12 @@
+worker:
+    queue: Inform
+    name: TranscriptionWhisperWorker
+    #queue: TranscriptionWhisper
+    command: make /data/decoded/trans/{ID}/.whisper.done
+    workingDir: /cmd/
+    logFile: /data/logs/{ID}.log
+    #preloadKeyPrefix: transcription-whisper-preload
+
+recognizerConfig:
+    path: /models/config/
+

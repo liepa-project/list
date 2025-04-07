@@ -7,6 +7,7 @@ if __name__ == "__main__":
   # Optional positional argument
   argparser.add_argument('--input', '-i', type=str, 
                       help='An required path to audio signal')
+  argparser.add_argument("--output", nargs='?', required=True, help="file destination")
 
   args = argparser.parse_args()
   input_path = args.input #"audio-files/test.wav"
@@ -16,11 +17,14 @@ if __name__ == "__main__":
   #print("\ninfo:\n", info)
   #print("\nsegments:\n", segments)
   
-  print("# 1 S0000")
 
-  for segment in segments:
+
+  with open(args.output, "w") as f:
+    f.write("# 1 S0000")
+    for segment in segments:
       #print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
       for word in segment.words:
-          #print("\t[%.2fs -> %.2fs] %s" % (word.start, word.end, word.word))
-          word_txt=word.word.rstrip(".").lstrip(" ")
-          print("1 %.2f %.2f %s" % (word.start, word.end, word_txt))
+        #print("\t[%.2fs -> %.2fs] %s" % (word.start, word.end, word.word))
+        word_txt=word.word.rstrip(".").lstrip(" ")
+        #print("1 %.2f %.2f %s" % (word.start, word.end, word_txt))
+        f.write("1 %.2f %.2f %s\n" % (word.start, word.end, word_txt))

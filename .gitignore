@@ -101,3 +101,5 @@ src/tools/Makefile.options
 **/.idea/**
 src/decode/diarization-pyannote/test/**
 deploy/dipolis/Makefile.options
+**/bak/**
+*.bak

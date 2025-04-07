@@ -4,74 +4,44 @@
 
 -include Makefile.options
 
-INPUT_ROOT?=/audio.prepared
 OUTPUT_ROOT?=/decoded
-APPS_ROOT?=/apps/whisper
-RESULTS_ROOT?=/results
-#njobs=1
-#nthreads=4
-
-#PATH:=utils:$(APPS_ROOT)/bin:$(PATH)
-###export train_cmd=run.pl
-###export decode_cmd=run.pl
-
-PYTHONPATH?=/app
-PYTHON_SCRIPTS_DIR?=transcription
-###############################################################################
-TRANS_APP?=python3 $(PYTHON_SCRIPTS_DIR)/whisper.py
-
-
-###############################################################################
-SEND_METRIC_APP?=${APP_DIR}/send.metric
-###############################################################################
-
-# init symbolic directories
-transcription:
-	ln -s $(APPS_ROOT)/$(PYTHON_SCRIPTS_DIR)
-
-#utils:
-#	ln -s $(APPS_ROOT)/utils
+INPUT_ROOT?=/audio.prepared
 
 .SECONDARY:
 .DELETE_ON_ERROR:
 
+log=echo $$(date +'%Y-%m-%d %T')
+logb=$(log): START
+loge=$(log): END
+
+PYTHONPATH?=/app
+PYTHON_SCRIPTS_DIR?=/app/scripts
+###############################################################################
+DIARIZATION_APP?=python3 $(PYTHON_SCRIPTS_DIR)/whisper.py
+SEND_METRIC_APP?=${APP_DIR}/send.metric
 ###############################################################################
 ## for metrics
 SHELL=$(APP_DIR)/m_shell.sh
 .ONESHELL:
 .EXPORT_ALL_VARIABLES:
-worker=transcription.whisper
+worker=transcription-whisper
 ###############################################################################
 
-info:
-	echo "=====================INFO=========================="
-	echo "OUTPUT_ROOT=$(OUTPUT_ROOT)"
-	echo "INPUT_ROOT= $(INPUT_ROOT)"
-	echo "SCRIPTS_DIR=$(SCRIPTS_DIR)"
-	echo "MODELS_ROOT=$(MODELS_ROOT)"
-	echo "APPS_ROOT=  $(APPS_ROOT)"
-	echo "==================================================="
-
-
-$(OUTPUT_ROOT)/trans/%/whisper/.done: info $(OUTPUT_ROOT)/trans/%/whisper/lat.whisper.txt 
-	#rm -rf `dirname $@`	
-	#mkdir -p `dirname $@`
-	#$(TRANS_APP) -i $(INPUT_ROOT)/$*/prepared.wav > $(RESULTS_ROOT)/$*/lat.whisper.txt
-	touch $@	
-
-
-$(OUTPUT_ROOT)/trans/%/whisper/lat.whisper.txt: transcription
-	tsk=tr_whsp;id=$*;. $(APP_DIR)/m_start.sh $@
-	rm -rf `dirname $@`	
+# transcription with whisper
+$(OUTPUT_ROOT)/trans/%/res.whisper: $(INPUT_ROOT)/%/prepared.wav
+	tsk=whisper;id=$*;. $(APP_DIR)/m_start.sh $@
 	mkdir -p `dirname $@`
-	$(TRANS_APP) -i $(INPUT_ROOT)/$*/prepared.wav > $@
-	mkdir -p $(RESULTS_ROOT)/$*/
-	cp  $@ $(RESULTS_ROOT)/$*/lat.whisper.txt
+	$(DIARIZATION_APP) --input=$^ --output=$@
 
-#$(RESULTS_ROOT)/%/lat.whisper.txt: $(OUTPUT_ROOT)/trans/%/whisper/lat.whisper.txt
-#	mkdir -p $(RESULTS_ROOT)/$*/
-#	cp $^ $@
+$(OUTPUT_ROOT)/trans/%/.whisper.done: $(OUTPUT_ROOT)/trans/%/res.whisper
+		touch $@
 
 
-.PHONY:
-	info
+info:
+	echo OUTPUT_ROOT=$(OUTPUT_ROOT)
+	echo PYTHONPATH=$(PYTHONPATH)
+	echo PYTHON_SCRIPTS_DIR=$(PYTHON_SCRIPTS_DIR)
+	echo DIARIZATION_APP=$(DIARIZATION_APP)
+	echo APP_DIR=$(APP_DIR)
+	echo SHELL=$(SHELL)
+
