@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
 
   with open(args.output, "w") as f:
-    f.write("# 1 S0000")
+    f.write("# 1 S0000\n")
     for segment in segments:
       #print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
       for word in segment.words:

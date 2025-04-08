@@ -1,8 +1,9 @@
 worker:
-    queue: Inform
+    queue: Whisper
     name: TranscriptionWhisperWorker
     #queue: TranscriptionWhisper
     command: make /data/decoded/trans/{ID}/.whisper.done
+    resultFile: /data/decoded/trans/{ID}/res.whisper
     workingDir: /cmd/
     logFile: /data/logs/{ID}.log
     #preloadKeyPrefix: transcription-whisper-preload
