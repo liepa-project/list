@@ -1,0 +1,12 @@
+worker:
+    queue: Res2Eaf
+    name: Res2EafWorker
+    command: make /data/decoded/trans/{ID}/.res2eaf.done
+    resultFile: /data/results/{ID}/result.eaf
+    workingDir: /cmd/
+    logFile: /data/logs/{ID}.log
+    #preloadKeyPrefix: transcription-whisper-preload
+
+recognizerConfig:
+    path: /models/config/
+

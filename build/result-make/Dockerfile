@@ -1,7 +1,7 @@
 #########################################################################################
 ## docker will invoke this file from ../.. dir in order to access code
 #########################################################################################
-FROM golang:1.21-alpine as builder
+FROM golang:1.21-alpine AS builder
 
 ARG TOOLS_VERSION=0.1
 
@@ -18,9 +18,9 @@ RUN go build -o /go/bin/fix.lattice.time -ldflags "-X main.version=$TOOLS_VERSIO
 RUN go build -o /go/bin/lattice.to.webvtt -ldflags "-X main.version=$TOOLS_VERSION" lattice.to.webvtt/main.go
 RUN go build -o /go/bin/int.to.word -ldflags "-X main.version=$TOOLS_VERSION" int.to.word/main.go
 #########################################################################################
-FROM airenas/list-worker:1.0.400-44fd44b as cmdRunner
+FROM airenas/list-worker:1.0.400-44fd44b AS cmd_runner
 #########################################################################################
-FROM airenas/ubuntu.make:2.0 as runner
+FROM airenas/ubuntu.make:2.0 AS runner
 
 ARG BUILD_VERSION=0.1
 
@@ -41,7 +41,7 @@ WORKDIR /app
 
 RUN cpan install LWP::UserAgent JSON JSON::Parse
 
-COPY --from=cmdRunner /app/cmdWorkerService /app/
+COPY --from=cmd_runner /app/cmdWorkerService /app/
 COPY --from=builder /go/bin/send.metric /app/
 COPY --from=builder /go/bin/punct.lattice /app/
 COPY --from=builder /go/bin/lattice.to.text /app/

@@ -1,0 +1,4 @@
+OUTPUT_ROOT=/data/decoded
+INPUT_ROOT=/data/decoded/audio
+RESULTS_ROOT=/data/results
+APP_DIR=/app
